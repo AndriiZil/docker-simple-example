@@ -319,6 +319,82 @@
     --network bridge \
     centos
 ```
+### Показати список команд з томами
+```
+    docker volume -h
+```
+### Показати всі томи
+```
+    docker volume ls
+```
+### Створити volume
+```
+    docker volume create test-volume1
+```
+### Подивитися всі доступні команди
+```
+    docker volume create -h
+```
+### Подивитися конфігурацію конкретного волюма
+```
+    docker volume inspect test-volume1
+```
+### Видалити конкретний volume по його назві
+```
+    docker volume rm test-volume1
+```
+### Видалити всі томи що не використовуються
+```
+    docker volume prune
+```
+### Прибайндюємо папку таргет з локального компютера в папку app нашого контейнера
+```
+    docker container run -d --name nginx-bind-mount1 --mount type=bind,source="$(pwd)"/target,target=/app nginx
+```
+### Дивимось у розділ Mount у файлі
+```
+    docker container inspect nginx-bind-mount1
+```
+### Зходимо інтерактивно в докер і дивимось файли які можемо створити локально в target і побачити їх в контейнері папки app
+```
+    docker container exec -it nginx-bind-mount1 /bin/bash
+```
+### створюємо волюм не створюючи папки target2
+```
+    docker container run -d --name nginx-bind-mount2 -v "$(pwd)"/target2:/app nginx
+```
+### створимо файл і папку локально
+```
+    docker container exec -it nginx-bind-mount2 touch /app/file3.txt
+```
+### Якщо зайти в контейнер то ми побачимо всередині папки app файл file3.txt
+```
+    docker container exec -it nginx-bind-mount2 /bin/bash
+```
+### Створимо папку nginx з конфігом і прикріпимо волюм всередину де джерело "$(pwd)"/nginx/nginx.conf а призначений шлях всередині контенера /etc/nginx/nginx.conf
+```
+    docker container run -d --name nginx-bind-mount3 -v "$(pwd)"/nginx/nginx.conf:/etc/nginx/nginx.conf nginx
+```
+### Створимо волюм
+```
+    docker volume create html-volume
+```
+### Привяжемо том до каталога
+```
+    docker container run -d --name nginx-volume1 --mount type=volume,source=html-volume,target=/user/share/nginx/html nginx
+```
+### Змінюємо вміст файла index.html
+```
+    sudo vi /var/lib/docker/volumes/html-volume/_data/index.html
+```
+### Створимо волюм без можливості редагування файлів
+```
+    docker run -d --name nginx-volume3 --mount source=html-volume,target=/usr/share/nginx/html,readonly nginx
+```
+### Білдимо образ із докерфайла -t linuxacademy/weather-app назва образа і v1 тег
+```
+    docker image build -t linuxacademy/weather-app:v1 .
+```
 ### 
 ```
     
@@ -335,4 +411,33 @@
 ```
     
 ```
+### 
+```
+    
+```
+### 
+```
+    
+```
+### 
+```
+    
+```
+### 
+```
+    
+```
+### 
+```
+    
+```
+### 
+```
+    
+```
+### 
+```
+    
+```
+
 
