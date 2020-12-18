@@ -1,61 +1,57 @@
 ### Docker for developers
 
-
+### Створити container
+```
+    docker container run -it --name <NAME> <IMAGE>:<TAG> 
+```
+### Подивитися опції імеджу
+```
+    docker image inspect <IMAGE ID>
+```
 ### Скачати імедж з DockerHub
 ```
     docker run -it nginx bash
 ```
-
 ### Скачати і запустити контейнер
 ```
     docker run
 ```
-
 ### Увійти інтерактивно в контейнер
 ```
     -it
 ```
-
 ### Імя контейнера для скачування в DockerHub
 ```
     nginx
 ```
-
 ### Команду яку потрібно виконати всередині контейнера
 ```
     bash
 ```
-
 ### Показати всі імеджі скачані з DockerHub в локальному реєстрі
 ```
     docker images
 ```
-
 ### Виконати команду cat над файлом nginx.conf
 ```
     docker run nginx cat /etc/nginx/nginx.conf
 ```
-
 ### Стартувати новий контейнер на базі образа nginx
 ```
     docker run nginx
 ```
-
 ### Прокинути порт на зовні 8080 для доступу через localhost
 ```
     docker run -p 8080:80 nginx
 ```
-
 ### Порт всередині контейнера
 ```
     80
 ```
-
 ### Запуск в фоновому режимі
 ```
     docker run -p 8080:80 -d nginx
 ```
-
 ### Запущені контейнери
 ```
     docker ps
@@ -64,12 +60,10 @@
 ```
     docker ps -a
 ```
-
 ### Поставити контейнер на паузу 
 ```
     docker pause 68bd53695a6d (<CONTAINER ID>)
 ```
-
 ### Відновити роботу після паузи
 ```
     docker unpause 68bd53695a6d
@@ -102,6 +96,19 @@
 ```
     docker pull nginx
 ```
+### Запуск контейнера на базі образа nginx
+```
+    docker container run -P -d nginx
+```
+### Привязує рандомний порт
+```
+   -P  
+```
+### Запускає контейнер в фоновому режимі
+```
+   -d 
+```
+
 ### прокинути файли в контейнер в папку app
 ```
     docker run -p 8080:80 -v ~/Documents/Docker-examples/PHP:/app nginx
@@ -166,6 +173,10 @@
 ```
     docker container inspect e7a599535bc4
 ```
+### Зробити виклик на рандомно присвоєний IP
+```
+    curl http://172.17.0.2
+```
 ### Підключення до стандартного вводу виводу контейнера
 ```
     docker container attach e7a599535bc4
@@ -186,14 +197,29 @@
 ```
     docker container prune -f
 ```
-### Видаляємо my_busybox контейнер
+### Список команд run
+```
+    docker container run --help
+```
+### Видаляємо my_busybox контейнер після його завершення
 ```
     docker container run --rm busybox
+```
+### Входимо в контейнер з можливістю вводу
+```
+    docker container run -it busybox
+```
+### Видаляємо зупинені конетйнери
+```
+    docker container prune -f
 ```
 ### Назначаємо імя контенеру my_busybox
 ```
     docker container run --name my_busybox busybox
 ```
+
+## PORT
+
 ### Відкрити порт 3000 без перенаправлення
 ```
     docker container run -d --expose 3000 nginx
@@ -210,7 +236,7 @@
 ```
     docker container run -d -p 8081:80/tcp -p 8081:80/udp nginx
 ```
-### Показує список портів
+### Показує список портів для перенаправлення
 ```
     docker container port 01b98b8e9245
 ```
@@ -218,7 +244,9 @@
 ```
     docker container run -d -P nginx
 ```
-### Заходимо інтерактивно в консоль
+## Commands in container
+
+### Заходимо інтерактивно в консоль для виконання команд (при виході контейнер зупиниться)
 ```
     docker container run -it nginx /bin/bash
 ```
@@ -234,19 +262,36 @@
 ```
     docker container exec -it 3638ac20ae82 /bin/bash
 ```
+## Container logs
 ### Скачати аплікацію з погодою і відкрити порт localhost:80
 ```
     docker container run --name weather-app -d -p 80:3000 linuxacademycontent/weather-app
 ```
 ### Дивитися логи по контейнер id
 ```
-    docker logs 61ddc2d8555c
+    docker container logs <CONTAINER ID>
 ```
+## Network
 ### Список допомоги по мережах
 ```
     docker network -h
 ```
-### Список мереж
+### Network Drivers:
+* bridge // linux only
+* host
+* overlay
+* macvlan
+* none // not working with docker swarm
+* Network plugins
+### Показує всі адаптери
+```
+    ifconfig
+```
+### Показує всі команди networks
+```
+    docker network -h
+```
+### Список всіх мереж
 ```
     docker network ls
 ```
@@ -258,7 +303,7 @@
 ```
     docker network create br00
 ```
-### видаляємо мережу по назві або id
+### Видаляємо мережу по назві або id
 ```
     docker network rm br00 
 ```
@@ -278,15 +323,15 @@
 ```
     docker network connect br01 network-test03
 ```
-### подивимось підєднаний контейнер 
+### Подивимось підєднаний контейнер 
 ```
     docker container inspect d4cabaf8f86d
 ```
-### видалемо мережу з контейнера
+### Видалемо мережу з контейнера
 ```
     docker network disconnect br01 network-test03
 ```
-### Створюємо підмережу
+### Створюємо підмережу (діапазони приватних IP адресів)
 ```
     docker network create --subnet 10.1.0.0/24 --gateway 10.1.0.1 br02
 ```
@@ -295,7 +340,7 @@
     docker network create --subnet 10.1.0.0/16 --gateway 10.1.0.1 \
     --ip-range=10.1.4.0/24 --driver=bridge --label=host4network br04
 ```
-### Прикріпляємо мережу до контенера і скачуємо сам centos образ якщо такого немає
+### Прикріпляємо мережу до контейнера і скачуємо сам centos образ якщо такого немає
 ```
     docker container run --name network-test01 -it --network br04 centos /bin/bash
 ```
@@ -307,11 +352,19 @@
 ```
     docker network create -d bridge --internal localhost
 ```
+### ми не хочемо щоб ережда була привязана до якогось з наших інтерфейсів
+```
+    --internal
+```
 ### Створимо контейнер mysql і запустимо його в фоні
 ```
     docker container run -d --name test_mysql \
     -e MYSQL_ROOT_PASSWORD=P4sSw0rd0 \
     --network localhost mysql:5.7
+```
+### Флаг для перемінних середовища
+```
+    -e
 ```
 ### Створюємо контейнер який буде пінгувати mysql
 ```
